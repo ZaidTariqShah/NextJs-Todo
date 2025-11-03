@@ -18,7 +18,7 @@ export default function Home() {
     fetchData();
   }, []);
 
-  const postTodos = async (e) => {
+  const postTodos = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     await axios.post("/api/todos", { task });
     setTask("");

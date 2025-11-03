@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-const URL: string = process.env.URL;
+const URL = process.env.URL as string;
 export const ConnectDb = async () => {
   try {
     await mongoose.connect(URL);
