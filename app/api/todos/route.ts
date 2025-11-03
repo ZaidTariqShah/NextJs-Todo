@@ -8,7 +8,7 @@ export const GET = async (req: Request) => {
     if (user.length === 0) {
       return NextResponse.json({ message: "No users found" });
     }
-    return NextResponse.json({ userData:user });
+    return NextResponse.json({ userData: user });
   } catch (err) {
     console.error("Error fetching data", err);
     return NextResponse.json(
@@ -35,7 +35,7 @@ export const POST = async (req: Request) => {
   }
 };
 
-export const DELETE = async (req:Request) => {
+export const DELETE = async (req: Request) => {
   await ConnectDb();
   try {
     const { id } = await req.json();
@@ -44,5 +44,17 @@ export const DELETE = async (req:Request) => {
   } catch (err) {
     console.error("Error deleting data", err);
     return NextResponse.json({ error: "Failed to delete" }, { status: 500 });
+  }
+};
+
+export const PUT = async (req: Request) => {
+  await ConnectDb();
+  try {
+    const { id, task } = await req.json();
+    const updateUser = await myModel.findByIdAndUpdate(id, { task },{new:true});
+    return NextResponse.json({ userData: updateUser }, { status: 200 });
+  } catch (err) {
+    console.error("Error Updating data", err);
+    return NextResponse.json({ error: "Failed to Update" }, { status: 500 });
   }
 };
