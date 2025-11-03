@@ -7,22 +7,23 @@ interface Todo {
   _id: string;
   task: string;
 }
+
 export default function Home() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [currentId, setCurrentId] = useState<string>("");
   const [editMode, setEditMode] = useState<boolean>(false);
   const [task, setTask] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(true); // ✅ Added
 
   const getTodos = async () => {
+    setLoading(true); // ✅ Start loading
     const res = await axios.get("/api/todos");
     setTodos(res.data.userData || []);
+    setLoading(false); // ✅ Stop loading
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      await getTodos();
-    };
-    fetchData();
+    getTodos();
   }, []);
 
   const postTodos = async (e: React.FormEvent) => {
@@ -43,7 +44,7 @@ export default function Home() {
     }
   };
 
-  const handleEdit = async (item: { _id: string; task: string }) => {
+  const handleEdit = (item: Todo) => {
     setTask(item.task);
     setEditMode(true);
     setCurrentId(item._id);
@@ -67,7 +68,6 @@ export default function Home() {
         📝 My Todo List
       </h1>
 
-      {/* Input Form */}
       <form
         onSubmit={editMode ? updateTodos : postTodos}
         className="flex w-full max-w-md items-center gap-3 bg-gray-800/70 p-4 rounded-2xl shadow-2xl backdrop-blur-md border border-gray-700 hover:border-indigo-400 transition-all duration-300"
@@ -87,9 +87,13 @@ export default function Home() {
         </button>
       </form>
 
-      {/* Todo List */}
+      {/* ✅ Fixed List Display */}
       <div className="mt-10 w-full max-w-md space-y-4">
-        {todos.length === 0 ? (
+        {loading ? ( // 👇 Show loading first
+          <p className="text-gray-400 text-center text-lg font-medium animate-pulse bg-gray-800/60 py-5 rounded-xl shadow-md border border-gray-700">
+            Loading your tasks... ⏳
+          </p>
+        ) : todos.length === 0 ? (
           <p className="text-gray-400 text-center text-lg font-medium animate-pulse bg-gray-800/60 py-5 rounded-xl shadow-md border border-gray-700">
             No tasks found 😢 <br /> Add your first one!
           </p>
@@ -104,7 +108,6 @@ export default function Home() {
               </p>
 
               <div className="flex items-center gap-3">
-                {/* 🎨 EDITED BUTTON: Modern styling with embedded SVG (Edit icon) */}
                 <button
                   onClick={() => handleEdit(item)}
                   className="p-3 rounded-full bg-blue-500/15 hover:bg-blue-500/25 text-blue-400 hover:text-blue-300 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -123,7 +126,6 @@ export default function Home() {
                   </svg>
                 </button>
 
-                {/* 🎨 EDITED BUTTON: Modern styling with embedded SVG (Delete/Trash icon) */}
                 <button
                   onClick={() => deleteTodos(item._id)}
                   className="p-3 rounded-full bg-red-500/15 hover:bg-red-500/25 text-red-400 hover:text-red-300 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-400"
