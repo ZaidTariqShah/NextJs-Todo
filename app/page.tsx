@@ -21,7 +21,7 @@ export default function Home() {
     fetchData();
   }, []);
 
-  const postTodos = async (e: React.FormEvent<HTMLFormElement>) => {
+  const postTodos = async (e: React.FormEvent) => {
     e.preventDefault();
     await axios.post("/api/todos", { task });
     toast.success("Added!");
@@ -45,7 +45,7 @@ export default function Home() {
     setCurrentId(item._id);
   };
 
-  const updateTodos = async (e: React.FormEvent<HTMLFormElement>) => {
+  const updateTodos = async (e: React.FormEvent) => {
     e.preventDefault();
     await axios.put("/api/todos", { id: currentId, task });
     toast.success("Task updated!");
