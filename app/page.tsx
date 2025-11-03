@@ -3,8 +3,12 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
+interface Todo {
+  _id: string;
+  task: string;
+}
 export default function Home() {
-  const [todos, setTodos] = useState<{ _id: string; task: string }[]>([]);
+  const [todos, setTodos] = useState<Todo[]>([]);
   const [currentId, setCurrentId] = useState<string>("");
   const [editMode, setEditMode] = useState<boolean>(false);
   const [task, setTask] = useState<string>("");
